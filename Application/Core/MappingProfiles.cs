@@ -1,3 +1,4 @@
+using System.Linq;
 using AutoMapper;
 using Domain;
 
@@ -9,6 +10,8 @@ namespace Application.Core
         {
             //mapping from an patient to patient
             CreateMap<Patient, Patient>();
+            CreateMap<AppUser, Profiles.Profile>()
+            .ForMember(d => d.Image, o => o.MapFrom(s => s.Photos.FirstOrDefault(x => x.IsMain).Url));
         }
     }
 }

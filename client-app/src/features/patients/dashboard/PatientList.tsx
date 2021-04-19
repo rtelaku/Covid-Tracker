@@ -1,53 +1,32 @@
-import React, { SyntheticEvent, useState } from 'react';
-import { Button, Item , ItemMeta, Label, Segment} from 'semantic-ui-react';
-import { Patient } from '../../../app/models/patient';
+import { observer } from 'mobx-react-lite';
+import { Fragment } from 'react';
+import { Header } from 'semantic-ui-react';
+import { useStore } from '../../../app/stores/store';
+import PatientListItem from './PatientListItem';
 
-interface Props{
-    patients: Patient[];
-    
-    selectPatient:(id: string)=>void;
-    deletePatient:(id: string) => void;
-    submitting:boolean;
+export default observer (function PatientList(){
 
-}
-
-export default function PatientList({patients,selectPatient,deletePatient,submitting}: Props){
-    const[target, setTarget] = useState('');
-
-    function handlePatientDelete(e: SyntheticEvent<HTMLButtonElement>, id: string){
-        setTarget(e.currentTarget.name); 
-        deletePatient(id);
-        
-    }
+    const {patientStore} = useStore();
+    const {groupedPatients} = patientStore;
     
     return(
-        <Segment>
-            <Item.Group divided>
-                {patients.map(patient =>(
-                    <Item key={patient.id}>
-                        <Item.Content>
-                        <Item.Header as='a'>{patient.name}</Item.Header>
-                        <Item.Meta>{patient.date}</Item.Meta>
-                        <Item.Description>
-                            <div>{patient.description}</div>
-                            <div>{patient.city}</div>
-                            </Item.Description> 
-                            <Item.Extra>
-                                <Button onClick={()=>selectPatient(patient.id)} floated='right' content='View' color='blue'/>
-                                <Button
-                                name={patient.id} 
-                                loading={submitting && target===patient.id}
-                                 onClick={(e)=>handlePatientDelete(e, patient.id)}
-                                 floated='right' content='Delete' 
-                                 color='red'/>
-                                <Label basic content={patient.category}/>
-                                </Item.Extra>
-                            </Item.Content>
-                            </Item>
+        <>
+        {groupedPatients.map(([group, patients]) => (
+            <Fragment key={group} >
+                <Header sub color='purple'>
+                    {group}
+                </Header>
+
+                {patients.map(patient => (
+                    <PatientListItem key={patient.id} patient={patient} />
                 ))}
 
-            </Item.Group>
-        </Segment>
+            </Fragment>
 
+        ))}
+        
+        </>
+
+        
     )
-}
+})

@@ -1,50 +1,38 @@
-import React from 'react';
-import { Grid, GridColumn, List } from 'semantic-ui-react';
-import { Patient } from '../../../app/models/patient';
-import PatientsDetails from '../details/PatientDetails';
-import PatientForm from '../form/PatientForm';
+import getOverlappingDaysInIntervals from 'date-fns/getOverlappingDaysInIntervals';
+import { observer } from 'mobx-react-lite';
+import React, { useEffect } from 'react';
+import { Grid, GridColumn, Statistic} from 'semantic-ui-react';
+import LoadingComponents from '../../../app/layout/LoadingComponents';
+import { useStore } from '../../../app/stores/store';
 import PatientList from './PatientList';
 
-interface Props{
-    patients: Patient[];
-    selectedPatient: Patient | undefined;
-    selectPatient:(id: string)=>void;
-    cancelSelectPatient: ()=> void;
-    editMode: boolean;
-    openForm:(id: string) => void;
-    closeForm:()=>void;
-    createOrEdit:(patient: Patient)=>void;
-    deletePatient:(id: string) => void;
-    submitting:boolean;
-}
 
-export default function PatientDashboard({patients, selectedPatient,
-     selectPatient, cancelSelectPatient, editMode, openForm , closeForm, 
-     createOrEdit, deletePatient,submitting}: Props){
+export default observer (function PatientDashboard(){
+
+        const {patientStore} = useStore();
+        const {loadPatients, patientRegistry} = patientStore;
+        
+        useEffect(() => {
+          //it's going to load patients from database only in the beginning, 
+          //then it takes the patients from local memory
+          if(patientRegistry.size <=1) patientStore.loadPatients();
+        },[patientRegistry.size, patientStore]);
+      
+        if(patientStore.loadingInitial) return <LoadingComponents content='Loading patients...'/> 
+        
 return(
     <Grid>
-        <GridColumn width='10'>
-       <PatientList patients={patients}
-        selectPatient={selectPatient}
-        deletePatient={deletePatient}
-        submitting={submitting}
-        />
+       <Grid.Row centered>
+        <Statistic >
+        <Statistic.Value>{patientRegistry.size}</Statistic.Value>
+        <Statistic.Label>Infected</Statistic.Label>
+       </Statistic>
+      </Grid.Row>
+      <Grid.Row centered>
+      <GridColumn width='12'>
+       <PatientList />
         </GridColumn>
-        <GridColumn width='6'>
-            {selectedPatient && !editMode &&
-            <PatientsDetails 
-            patient={selectedPatient} 
-            cancelSelectPatient={cancelSelectPatient} 
-            openForm={openForm}
-            submitting={submitting}
-            />}
-            {editMode &&
-            <PatientForm closeForm={closeForm} 
-            patient={selectedPatient} createOrEdit={createOrEdit} 
-            submitting={submitting}/>}
-        </GridColumn>
+        </Grid.Row>
     </Grid>
 )
-
-
-}
+})

@@ -1,33 +1,34 @@
-import React from 'react';
-import { Card, Image, Icon, Button } from 'semantic-ui-react';
-import { Patient } from '../../../app/models/patient';
+import { observer } from 'mobx-react-lite';
+import React, { useEffect } from 'react';
+import { useParams } from 'react-router';
+import { Grid } from 'semantic-ui-react';
+import LoadingComponents from '../../../app/layout/LoadingComponents';
+import { useStore } from '../../../app/stores/store';
+import PatientDetailedHeader from './PatientDetailedHeader';
+import PatientDetailedInfo from './PatientDetailedInfo';
 
-interface Props{
-    patient: Patient
-    cancelSelectPatient: ()=> void;
-    openForm:(id: string) =>void;
-    submitting:boolean;
-  }
+export default observer (function PatientDetails(){
 
+  const {patientStore} = useStore();
+  const {selectedPatient: patient, loadPatient, loadingInitial} = patientStore;
+  const {id} = useParams<{id: string}>();
 
-export default function PatientDetails({ patient, cancelSelectPatient, openForm, submitting }: Props){
+  useEffect(() => {
+    if(id) loadPatient(id);
+  }, [id, loadPatient])
+
+  if(loadingInitial || !patient) return <LoadingComponents />;
+  
     return(
-        <Card fluid>
-        <Image src={'/assets/categoryImages/${patient.category}.jpg'} />
-        <Card.Content>
-          <Card.Header>{patient.name}</Card.Header>
-          <Card.Meta>
-            <span className='date'>{patient.date}</span>
-          </Card.Meta>
-          <Card.Description>
-            Matthew is a musician living in Nashville.
-          </Card.Description>
-        </Card.Content>
-        <Card.Content extra>
-            <Button onClick={()=>openForm(patient.id)} basic color='blue' content='Edit' />
-            <Button onClick={cancelSelectPatient} basic color='grey' content='Cancel' />
-
-        </Card.Content>
-      </Card>
+       <Grid>
+         <Grid.Row centered columns={1} >
+         <Grid.Column width={10}>
+           <PatientDetailedHeader patient={patient}/>
+           <PatientDetailedInfo patient={patient}/>
+         </Grid.Column>
+         <Grid.Column>
+         </Grid.Column>
+         </Grid.Row>
+       </Grid>
     )
-}
+})

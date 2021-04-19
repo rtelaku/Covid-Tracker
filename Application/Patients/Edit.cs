@@ -1,7 +1,9 @@
 using System.Threading;
 using System.Threading.Tasks;
+using Application.Core;
 using AutoMapper;
 using Domain;
+using FluentValidation;
 using MediatR;
 using Persistence;
 
@@ -9,12 +11,20 @@ namespace Application.Patients
 {
     public class Edit
     {
-        public class Command : IRequest
+        public class Command : IRequest<Result<Unit>>
         {
         public Patient Patient { get; set; }
         }
 
-        public class Handler : IRequestHandler<Command>
+         public class CommanvValidator : AbstractValidator<Command>
+        {
+            public CommanvValidator()
+            {
+                RuleFor(x => x.Patient).SetValidator(new PatientValidator());
+            }
+        }
+
+        public class Handler : IRequestHandler<Command, Result<Unit>>
         {
             private readonly DataContext _context;
             private readonly IMapper _mapper;
@@ -26,12 +36,19 @@ namespace Application.Patients
 
             }
 
-            public async Task<Unit> Handle(Command request, CancellationToken cancellationToken)
+            public async Task<Result<Unit>> Handle(Command request, CancellationToken cancellationToken)
             {
                 var patient = await _context.Patients.FindAsync(request.Patient.Id);
-                _mapper.Map(request.Patient, patient);
-                await _context.SaveChangesAsync();
-                return Unit.Value;
+
+                if(patient == null) return null;
+
+                _mapper.Map(request.Patient, patient); 
+                
+                var result = await _context.SaveChangesAsync() > 0;
+
+                if(!result) return Result<Unit>.Failure("Failed to edit the patient");
+
+                return Result<Unit>.Success(Unit.Value);
             }
         }
     }

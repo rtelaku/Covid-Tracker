@@ -1,102 +1,67 @@
-import React, { Fragment, useEffect, useState } from 'react';
-import { Container, Header, List } from 'semantic-ui-react';
-import { Patient } from '../models/patient';
+import React, { useEffect } from 'react';
+import { Container} from 'semantic-ui-react';
 import NavBar from './NavBar';
 import PatientDashboard from '../../features/patients/dashboard/PatientDashboard';
-import {v4 as uuid} from 'uuid';
-import agent from '../api/agent';
 import LoadingComponents from './LoadingComponents';
+import { useStore } from '../stores/store';
+import { observer } from 'mobx-react-lite';
+import { Route, Switch } from 'react-router';
+import HomePage from '../../features/home/HomePage';
+import PatientForm from '../../features/patients/form/PatientForm';
+import PatientDetails from '../../features/patients/details/PatientDetails';
+import { useLocation } from 'react-router-dom';
+import { ToastContainer } from 'react-toastify';
+import NotFound from '../../features/errors/NotFound';
+import ServerError from '../../features/errors/ServerError';
+import LoginForm from '../../features/users/LoginForm';
+import ModalConatainer from '../common/modals/ModalContainer';
+import ProfilePage from '../../features/profiles/ProfilePage';
 
 
 function App() {
 
-  const[patients, setPatients] = useState<Patient[]>([]);
-  const[selectedPatient, setSelectedPatient] = useState<Patient | undefined>(undefined);
-  const[editMode, setEditMode] = useState(false);
-  const[loading, setLoading] = useState(true);
-  const[submitting, setSubmitting] = useState(false);
+  const location = useLocation();
+  const {commonStore, userStore} = useStore();
 
   useEffect(() => {
-    agent.Patients.list().then(response => {
-      let patients: Patient[] = [];
-      response.forEach(patient=> {
-        patient.date = patient.date.split('T')[0];
-        patients.push(patient);
-      })
-      setPatients(response);
-      setLoading(false);
-    })
-  }, []);
-
-
-  function handleSelectPatient(id: string){
-    setSelectedPatient(patients.find(x => x.id === id));
-  }
-
-  function handleCancelSelectedPatient(){
-    setSelectedPatient(undefined);
-  }
-  function handleFormOpen(id?: string ){
-    id? handleSelectPatient(id) : handleCancelSelectedPatient();
-    setEditMode(true);
-  }
-  function handleFormClose(){
-    setEditMode(false);
-  }
-
-  function handleCreateOrEditPatient(patient: Patient){
-    setSubmitting(true);
-    if(patient.id){
-      agent.Patients.update(patient).then(() =>
-      {
-        setPatients([...patients.filter(x=> x.id !=patient.id), patient])
-        setSelectedPatient(patient);
-        setEditMode(false);
-        setSubmitting(false);
-      })
-    }else{
-      patient.id= uuid();
-      agent.Patients.create(patient).then(()=>{
-        setPatients([...patients,patient])
-        setSelectedPatient(patient);
-        setEditMode(false);
-        setSubmitting(false);
-      })
+    if (commonStore.token) {
+      userStore.getUser().finally(() => commonStore.setAppLoaded());
+    } else {
+      commonStore.setAppLoaded()
     }
-  }
+  }, [commonStore, userStore])
 
+  if (!commonStore.appLoaded) return <LoadingComponents content='Loading app...' />
 
-  function handleDeletePatient(id: string){
-    setSubmitting(true);
-    agent.Patients.delete(id).then(() =>{
-      setPatients([...patients.filter(x =>x.id !== id)])
-      setSubmitting(false);
-  
-    })
-  
-  }
-
-  if(loading) return <LoadingComponents content='Loading app'/>
   return (
     <>
-      <NavBar openForm={handleFormOpen}/>
+    <ToastContainer position='bottom-right' hideProgressBar/>
+    <ModalConatainer/>
+    <Route exact path='/' component={HomePage} />
+    <Route
+    path={'/(.+)'} 
+    render={() => (
+      <>
+      <NavBar/>
       <Container style={{marginTop: '7em'}}>
-      <PatientDashboard 
-      patients={patients}
-      selectedPatient={selectedPatient}
-      selectPatient={handleSelectPatient}
-      cancelSelectPatient={handleCancelSelectedPatient}
-      editMode={editMode}
-      openForm={handleFormOpen}
-      closeForm={handleFormClose}
-      createOrEdit={handleCreateOrEditPatient}
-      deletePatient={handleDeletePatient}
-      submitting={submitting}
-      />
+      <Switch>
+      <Route exact path='/' component={HomePage} />
+      <Route exact path='/patients' component={PatientDashboard} />
+      <Route path='/patients/:id' component={PatientDetails} />
+      <Route key={location.key} path={['/createPatient', '/manage/:id']} component={PatientForm} />
+      <Route path='/server-error' component={ServerError} />
+      <Route path='/login' component={LoginForm} />
+      <Route path='/profiles/:username' component={ProfilePage} />
+      <Route path='/server-error' component={ServerError} />
+      <Route component={NotFound}/>
+      </Switch>
       </Container>
-     
+      </>
+    )}
+    />
     </>
   );
 }
 
-export default App;
+export default observer (App);
+
