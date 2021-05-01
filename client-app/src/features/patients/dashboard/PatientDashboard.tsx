@@ -29,7 +29,7 @@ return(
        </Statistic>
       </Grid.Row>
       <Grid.Row centered>
-      <GridColumn width='12'>
+      <GridColumn width='10'>
        <PatientList />
         </GridColumn>
         </Grid.Row>

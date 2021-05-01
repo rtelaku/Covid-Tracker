@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react-lite';
 import React from 'react'
 import { Link } from 'react-router-dom';
-import {Button, Header, Item, Segment, Image, Grid, Modal, Icon} from 'semantic-ui-react'
+import {Button, Header, Item, Segment, Image, Grid, Modal, Icon, Tab} from 'semantic-ui-react'
 import {Patient} from "../../../app/models/patient";
 import { useStore } from '../../../app/stores/store';
 
@@ -26,19 +26,9 @@ export default observer (function PatientDetailedHeader({patient}: Props) {
     const [open, setOpen] = React.useState(false);
     const {patientStore} = useStore();
     const {deletePatient} = patientStore;
+      
     
     return (
-        <Segment.Group>
-             <Segment clearing attached='top' style={{padding: '10'}}>
-             <Item.Group>
-                        <Item>
-                            <Item.Image avatar size='small' src={'/assets/user.png'} />
-                            <Item.Content verticalAlign='middle'>
-                                <Header as='h1' content={`${patient.name}`} />
-                           </Item.Content>
-                        </Item>
-                    </Item.Group>
-           </Segment>
             <Segment clearing attached='bottom'>
             <Modal
             closeIcon
@@ -70,7 +60,5 @@ export default observer (function PatientDetailedHeader({patient}: Props) {
                     Modify patient's data
                 </Button>
             </Segment>
-        </Segment.Group>
-        
     )
 })

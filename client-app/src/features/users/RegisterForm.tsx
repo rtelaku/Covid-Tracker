@@ -23,7 +23,7 @@ export default observer(function RegisterForm() {
         >
             {({handleSubmit, isSubmitting, errors, isValid, dirty}) => (
                 <Form className='ui form error' onSubmit={handleSubmit} autoComplete='off'>
-                    <Header as='h2' content='Sign up to Covid Tracker' color='violet' textAlign='center' />
+                    <Header as='h2' content='Sign up an admin to Covid Tracker' color='violet' textAlign='center' />
                     <MyTextInput name='displayName' placeholder='Display Name' />
                     <MyTextInput name='username' placeholder='Username' />
                     <MyTextInput name='email' placeholder='Email' />
