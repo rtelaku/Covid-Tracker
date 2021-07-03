@@ -24,26 +24,45 @@ export default function PatientListItem({patient}:Props){
         <Segment.Group>
             <Segment>
                 <Item.Group>
-                    <Item>
-                        <Item.Image size='tiny' circular src='/assets/user.png' />
+                    <Item>                
+                        <Item.Image size='tiny' circular src='/assets/user.png' /> 
                         <Item.Content>
                             <Item.Header as={Link} to={`/patients/${patient.id}`}>
                                 {patient.name}
                             </Item.Header>
-                            <Item.Description>Patient ID: {patient.id}</Item.Description>
+                            <Segment>
+                                <span>
+                                    <Icon color='purple' name='birthday' />{format(patient.date!, 'MMMM d, yyyy')}
+                                </span>
+                            </Segment>
                         </Item.Content>
                     </Item>
                 </Item.Group>
             </Segment>
+                
             <Segment>
                 <span>
-                    <Icon name='clock' />{format(patient.date!, 'dd MMM yyyy h:mm aa')}
-                    <Icon name='marker' />{patient.city}
+                    <Icon color='purple' name='id card' />{patient.id}
+                </span>
+            </Segment>
+            <Segment>
+                <span>
+                    <Icon color='purple' name='user' />{patient.personalId}
+                </span>
+            </Segment>
+            <Segment>
+                <span>
+                <Icon color='purple' name='info' />{patient.description}
+                </span>
+            </Segment>
+            <Segment>
+                <span>
+                <Icon color='purple' name='info' />{patient.category}
                 </span>
             </Segment>
             <Segment clearing>
                 <span>
-                    {patient.description}
+                    <Icon color='purple' name='marker' />{patient.city}
                 </span>
                 <Button
                 as={Link}

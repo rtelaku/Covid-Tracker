@@ -10,6 +10,7 @@ namespace Application.Patients
             RuleFor(x=> x.Name).NotEmpty();
             RuleFor(x=> x.Date).NotEmpty();
             RuleFor(x=> x.Description).NotEmpty();
+            RuleFor(x=> x.DateOfBirth).NotEmpty();
             RuleFor(x=> x.Category).NotEmpty();
             RuleFor(x=> x.City).NotEmpty();
         }

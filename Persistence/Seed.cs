@@ -14,10 +14,7 @@ namespace Persistence
             {
                 var users = new List<AppUser>
                 {
-                    new AppUser{DisplayName = "Bob", UserName = "bob", Email ="bob@test.com"},
-                    new AppUser{DisplayName = "Tom", UserName = "tom", Email ="tom@test.com"},
-                    new AppUser{DisplayName = "Jane", UserName = "jane", Email ="jane@test.com"},
-                    
+                    new AppUser{DisplayName = "Rigeita", UserName = "rigeita", Email ="rigeita@gmail.com"},
                 };
                 
                 foreach (var user in users)
@@ -33,6 +30,15 @@ namespace Persistence
         
             await context.Patients.AddRangeAsync(patients);
             await context.SaveChangesAsync();
+        
+             if (context.Doctors.Any()) return;
+
+            Microsoft.EntityFrameworkCore.DbSet<Doctor> doctors1 = context.Doctors;
+            var doctors = doctors1;
+        
+            await context.Doctors.AddRangeAsync(doctors);
+            await context.SaveChangesAsync();
+        }
         }
     }
-}
+

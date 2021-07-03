@@ -24,9 +24,6 @@ export default observer (function PatientList(){
             </Fragment>
 
         ))}
-        
-        </>
-
-        
+        </> 
     )
 })

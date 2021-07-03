@@ -10,14 +10,16 @@ export default observer( function NavBar(){
     return(
         <Menu inverted fixed='top'>
             <Container>
-                <Menu.Item as={NavLink} to='/' exact header>
+                <Menu.Item as={NavLink} to='/admin' exact header>
                     <img src="/assets/viruslogo.png" alt="logo" style={{marginRight: '10px'}}/> 
                     Covid Tracker
                 </Menu.Item>
-                <Menu.Item as={NavLink} to='/patients' name='Patients'/>
-                <Menu.Item as={NavLink} to='/createPatient' positive content='New case' />
                
                 <Menu.Item position='right'>
+                <Menu.Item as={NavLink} to='/patients' name='Patients'/>
+                <Menu.Item as={NavLink} to='/doctors' name='Doctors'/>
+                <Menu.Item as={NavLink} to='/vaccinations' name='Vaccination Centers'/>
+                <Menu.Item as={NavLink} to='/createPatient' positive content='New case' />
                     <Image src={user?.image || '/assets/user.png'} avatar spaced='right' />
                     <Dropdown pointing='top left' text={user?.displayName}>
                         <Dropdown.Menu>

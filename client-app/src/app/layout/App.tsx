@@ -16,6 +16,14 @@ import ServerError from '../../features/errors/ServerError';
 import LoginForm from '../../features/users/LoginForm';
 import ModalConatainer from '../common/modals/ModalContainer';
 import ProfilePage from '../../features/profiles/ProfilePage';
+import UserDashboard from '../../userside/UserDashboard';
+import DoctorDashboard from '../../features/doctors/dashboard/DoctorDashboard';
+import DoctorDetails from '../../features/doctors/details/DoctorDetails';
+import DoctorForm from '../../features/doctors/form/DoctorForm';
+import VaccinationDetails from '../../features/vaccinations/details/VaccinationDetails';
+import VaccinationForm from '../../features/vaccinations/form/VaccinationForm';
+import VaccinationDashboard from '../../features/vaccinations/dashboard/VaccinationDashboard';
+
 
 
 function App() {
@@ -37,18 +45,23 @@ function App() {
     <>
     <ToastContainer position='bottom-right' hideProgressBar/>
     <ModalConatainer/>
-    <Route exact path='/' component={HomePage} />
+    <Route exact path='/' component={UserDashboard} />
+    <Route exact path='/admin' component={HomePage} />
     <Route
     path={'/(.+)'} 
     render={() => (
       <>
-      <NavBar/>
       <Container style={{marginTop: '7em'}}>
       <Switch>
-      <Route exact path='/' component={HomePage} />
       <Route exact path='/patients' component={PatientDashboard} />
+      <Route exact path='/doctors' component={DoctorDashboard} />
+      <Route exact path='/vaccinations' component={VaccinationDashboard} />
+      <Route path='/vaccinations/:id' component={VaccinationDetails} />
+      <Route path='/doctors/:id' component={DoctorDetails} />
       <Route path='/patients/:id' component={PatientDetails} />
+      <Route key={location.key} path={['/createVaccinationCenter', '/edit/:id']} component={VaccinationForm} />
       <Route key={location.key} path={['/createPatient', '/manage/:id']} component={PatientForm} />
+      <Route key={location.key} path={['/createDoctor', '/update/:id']} component={DoctorForm} />
       <Route path='/server-error' component={ServerError} />
       <Route path='/login' component={LoginForm} />
       <Route path='/profiles/:username' component={ProfilePage} />
@@ -64,4 +77,5 @@ function App() {
 }
 
 export default observer (App);
+
 
