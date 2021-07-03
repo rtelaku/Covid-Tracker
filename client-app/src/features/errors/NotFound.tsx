@@ -9,11 +9,11 @@ export default function NotFound(){
             <Icon name = 'search' />
             Oops - we've looked everywhere but could not find this.
             </Header>
-            <Segment.Inline>
+            {/* <Segment.Inline>
                 <Button as={Link} to='/patients'>
                     Return to patients page
                 </Button>
-            </Segment.Inline>
+            </Segment.Inline> */}
         </Segment>
     )
 }

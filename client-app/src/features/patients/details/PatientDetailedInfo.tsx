@@ -14,6 +14,16 @@ export default observer(function PatientDetailedInfo({patient}: Props) {
             <Segment attached='top'>
                 <Grid>
                     <Grid.Column width={1}>
+                        <Icon size='large' color='purple' name='user'/>
+                    </Grid.Column>
+                    <Grid.Column width={15}>
+                        <p>{patient.personalId}</p>
+                    </Grid.Column>
+                </Grid>
+            </Segment>
+            <Segment>
+                <Grid verticalAlign='middle'>
+                    <Grid.Column width={1}>
                         <Icon size='large' color='purple' name='info'/>
                     </Grid.Column>
                     <Grid.Column width={15}>
@@ -22,13 +32,15 @@ export default observer(function PatientDetailedInfo({patient}: Props) {
                 </Grid>
             </Segment>
             <Segment attached>
+            <Grid verticalAlign='middle'>
+                </Grid>
                 <Grid verticalAlign='middle'>
                     <Grid.Column width={1}>
                         <Icon name='calendar' size='large' color='purple'/>
                     </Grid.Column>
                     <Grid.Column width={15}>
             <span>
-              {format(patient.date!, 'dd MMM yyyy h:mm aa')}
+              {format(patient.date!, 'MMMM d, yyyy')}
             </span>
                     </Grid.Column>
                 </Grid>

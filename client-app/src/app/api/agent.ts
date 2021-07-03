@@ -1,9 +1,12 @@
+import { Photo, Profile } from './../models/profile';
 import { store } from './../stores/store';
 import axios, { AxiosError, AxiosResponse } from 'axios';
 import { toast } from 'react-toastify';
 import { history } from '../..';
 import { Patient } from '../models/patient';
+import { Doctor } from '../models/doctor';
 import { User, UserFormValues } from '../models/user';
+import { Vaccination } from '../models/vaccination';
 
 
 const sleep = (delay: number) =>{
@@ -75,15 +78,48 @@ const Patients ={
     delete: (id: string) => axios.delete<void>(`/patients/${id}`)
 }
 
+const Doctors ={
+    list:() =>requests.get<Doctor[]>('/doctors'),
+    details: (id: string)=> requests.get<Doctor> (`/doctors/${id}`),
+    create: (doctor: Doctor) =>axios.post<void>('/doctors', doctor),
+    update: (doctor:Doctor) =>axios.put<void>(`/doctors/${doctor.id}`, doctor),
+    delete: (id: string) => axios.delete<void>(`/doctors/${id}`)
+}
+const Vaccinations ={
+    list:() =>requests.get<Vaccination[]>('/vaccinations'),
+    details: (id: string)=> requests.get<Vaccination> (`/vaccinations/${id}`),
+    create: (vaccination: Vaccination) =>axios.post<void>('/vaccinations', vaccination),
+    update: (vaccination:Vaccination) =>axios.put<void>(`/vaccinations/${vaccination.id}`, vaccination),
+    delete: (id: string) => axios.delete<void>(`/vaccinations/${id}`)
+}
+
 const Account = {
     current: () => requests.get<User>('/account'),
     login: (user: UserFormValues) => requests.post<User>('/account/login', user),
     register: (user: UserFormValues) => requests.post<User>('/account/register', user),
 }
 
+const Profiles = {
+    get: (username: string) => requests.get<Profile>(`/profiles/${username}`),
+    uploadPhoto: (file: Blob) => {
+        let formData = new FormData();
+        formData.append('File', file);
+        return axios.post<Photo>('photos', formData, {
+            headers: { 'Content-type': 'multipart/form-data' }
+        })
+    },
+    setMainPhoto: (id: string) => requests.post(`/photos/${id}/setMain`, {}),
+    deletePhoto: (id: string) => requests.del(`/photos/${id}`),
+    updateProfile: (profile: Partial<Profile>) => requests.put(`/profiles`, profile),
+}
+
 const agent={
     Patients,
-    Account
+    Account,
+    Profiles,
+    Doctors,
+    Vaccinations
 }
+
 
 export default agent;

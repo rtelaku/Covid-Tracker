@@ -4,7 +4,7 @@ using Domain;
 
 namespace Application.Core
 {
-    public class MappingProfiles : Profile
+    public class MappingProfiles : AutoMapper.Profile
     {
         public MappingProfiles()
         {
@@ -12,6 +12,9 @@ namespace Application.Core
             CreateMap<Patient, Patient>();
             CreateMap<AppUser, Profiles.Profile>()
             .ForMember(d => d.Image, o => o.MapFrom(s => s.Photos.FirstOrDefault(x => x.IsMain).Url));
+            CreateMap<Doctor, Doctor>();
+            CreateMap<Vaccination, Vaccination>();
+
         }
     }
 }

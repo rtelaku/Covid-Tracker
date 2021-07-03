@@ -1,5 +1,5 @@
 export const categoryOptions = [
-    {text: 'Infected', value: 'infected'},
-    {text: 'Dead', value: 'dead'},
-    {text: 'Healed', value:'Healed'},
+    {text: 'Infected', value: 'Infected'},
+    {text: 'Dead', value: 'Dead'},
+    {text: 'Recovered', value:'Recovered'},
 ]

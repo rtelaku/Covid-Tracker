@@ -43,3 +43,36 @@ body{
   font-size: 1.7em;
   font-weight: normal;
 }
+
+select#select-category {
+  margin-top: 30px;
+  width: 70%;
+  height: 40px;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.ui[class*="right spaced"].image {
+  margin-left: 20px;
+}
+
+.form-segment {
+  display: flex;
+  justify-content: center;
+}
+
+.formik-segment {
+  width: 50%;
+}
+
+button.ui.fluid.positive.button {
+  background: purple;
+}
+
+button.ui.positive.disabled.right.floated.button {
+  background: purple;
+}
+
+button.ui.positive.right.floated.button {
+  background: purple;
+}

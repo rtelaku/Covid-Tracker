@@ -2,7 +2,7 @@ import { observer } from 'mobx-react-lite';
 import React, { useEffect, useState } from 'react';
 import { ChangeEvent } from 'react';
 import { useHistory, useParams } from 'react-router';
-import { Button, Header, Segment } from 'semantic-ui-react';
+import { Button, Grid, Header, Item, Segment } from 'semantic-ui-react';
 import LoadingComponents from '../../../app/layout/LoadingComponents';
 import { useStore } from '../../../app/stores/store';
 import {v4 as uuid} from 'uuid';
@@ -15,6 +15,10 @@ import MySelectInput from '../../../app/common/form/MySelectInput';
 import { categoryOptions } from '../../../app/common/options/categoryOptions';
 import MyDateInput from '../../../app/common/form/MyDateInput';
 import { Patient } from '../../../app/models/patient';
+import { cityOptions } from '../../../app/common/options/cityOptions';
+import UserNavBar from '../../../app/layout/UserNavBar';
+import NavBar from '../../../app/layout/NavBar';
+
 
 export default observer (function PatientForm(){
         const history = useHistory();
@@ -24,6 +28,8 @@ export default observer (function PatientForm(){
         const[patient, setPatient] = useState<Patient>({
             id: '',
             name:'',
+            personalId: '',
+            dateOfBirth: null,
             category:'',
             description:'',
             date: null,
@@ -32,6 +38,7 @@ export default observer (function PatientForm(){
 
         const validationSchema = Yup.object({
             name: Yup.string().required('Patient name is required'),
+            personalId: Yup.string().required('Patient name is required'),
             description: Yup.string().required('Patient description is required'),
             category: Yup.string().required('Patient category is required'),
             date: Yup.string().required('Date is required').nullable(),
@@ -58,7 +65,10 @@ export default observer (function PatientForm(){
 
 
     return(
-        <Segment clearing>
+        <>
+        <NavBar />
+        <div className="form-segment">
+        <Segment clearing  className="formik-segment">
         <Header content='Patient Details' sub color='purple'/>
         <Formik 
         validationSchema={validationSchema}
@@ -66,18 +76,25 @@ export default observer (function PatientForm(){
             {({handleSubmit, isValid, isSubmitting, dirty}) => (
              <Form className='ui form' onSubmit={handleSubmit} autoComplete='off' >
              <MyTextInput name='name' placeholder='Name'/>
-             <MyTextArea rows={3} placeholder='Description' name='description'/>
-             <MySelectInput options={categoryOptions} placeholder='Category' name='category'/>
+             <MyTextInput name='personalId' placeholder='Personal ID'/>
              <MyDateInput 
-             placeholderText='Date' 
-             name='date' 
-             showTimeSelect
-             timeCaption='time'
-             dateFormat='MMMM d, yyyy h:mm aa'
-            
-             />
+                            placeholderText='DateOfBirth'  
+                            name='dateOfBirth' 
+                            showTimeSelect
+                            timeCaption='time'
+                            dateFormat='MMMM d, yyyy'
+                        />
+            <MySelectInput options={categoryOptions} placeholder='Category' name='category'/>
+             <MyTextArea rows={3} placeholder='Description' name='description'/>
+             <MyDateInput 
+                            placeholderText='Date'  
+                            name='date' 
+                            showTimeSelect
+                            timeCaption='time'
+                            dateFormat='MMMM d, yyyy'
+                        />
              <Header content='Location Details' sub color='purple'/>
-             <MyTextInput placeholder='City' name='city'/>
+             <MySelectInput options={cityOptions} placeholder='City' name='city'/>
              <Button 
              disabled={isSubmitting || !dirty || !isValid}
              loading={loading} 
@@ -91,5 +108,8 @@ export default observer (function PatientForm(){
             )}
         </Formik>
         </Segment>
+        </div>
+    </>
     )
+
 })
